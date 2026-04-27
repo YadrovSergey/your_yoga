@@ -20,33 +20,20 @@ const greetingText = `🌿 Привет-привет! Ты зашёл(ла) по
 📌 Если ты никогда не занимался(лась) йогой — это место для тебя.
 Напиши в ответ «Хочу» — и я расскажу, как выглядит самое спокойное первое занятие без глупостей.`;
 
-const trialText = `Пробное занятие:
-• С собой нужна только удобная одежда.
-• Всё остальное у нас есть в студии.
-
-Если хочешь, могу сразу отправить расписание для записи.`;
-
-const faqText = `Ответы на частые вопросы:
-• Нужна ли специальная подготовка? — Нет, можно с нуля.
-• Что взять с собой? — Удобную одежду, всё остальное есть.
-• Если есть ограничения по здоровью? — Напиши тренеру перед занятием, подберем мягкий формат.`;
+const mainKeyboard = Markup.keyboard([["Меню"]]).resize();
 
 const menu = Markup.inlineKeyboard([
   [Markup.button.url("Абонементы", "https://yyogasochi.ru/#subscription")],
-  [Markup.button.callback("Пробное занятие", "trial")],
-  [Markup.button.url("Расписание", "https://yyogasochi.ru/schedule")],
-  [Markup.button.url("Записаться", "https://yyogasochi.ru/schedule")],
-  [Markup.button.callback("Ответы на вопросы", "faq")],
 ]);
 
 bot.start(async (ctx) => {
-  await ctx.reply(greetingText, menu);
+  await ctx.reply(greetingText, mainKeyboard);
 });
 
 bot.hears(/^хочу$/i, async (ctx) => {
   await ctx.reply(
     "Отлично, начинаем мягко и спокойно 🙌\n\nПробное занятие подойдет даже без опыта. С собой только удобная одежда, остальное есть в студии.",
-    menu
+    mainKeyboard
   );
 });
 
@@ -54,18 +41,12 @@ bot.command("menu", async (ctx) => {
   await ctx.reply("Быстрый доступ к разделам:", menu);
 });
 
-bot.action("trial", async (ctx) => {
-  await ctx.answerCbQuery();
-  await ctx.reply(trialText, menu);
-});
-
-bot.action("faq", async (ctx) => {
-  await ctx.answerCbQuery();
-  await ctx.reply(faqText, menu);
+bot.hears(/^меню$/i, async (ctx) => {
+  await ctx.reply("Быстрый доступ к разделам:", menu);
 });
 
 bot.on("text", async (ctx) => {
-  await ctx.reply("Я пока понимаю команды /start, /menu и слово «Хочу».", menu);
+  await ctx.reply("Я пока понимаю команды /start, /menu, кнопку «Меню» и слово «Хочу».", mainKeyboard);
 });
 
 bot.launch().then(() => {
